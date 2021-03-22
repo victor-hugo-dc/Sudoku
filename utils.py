@@ -92,6 +92,15 @@ def extract_corners(pts: np.ndarray) -> np.ndarray:
     return np.float32(rect)
 
 def crop_image(frame: np.ndarray, scale: float = 1.0) -> np.ndarray:
+    """
+    Crop the image by a certain scale.
+    :param frame: Input image to be cropped.
+    :type frame: NumPy array (np.ndarray).
+    :param scale: The scale for which to crop the image by.
+    :type scale: Float.
+    :return: The input image cropped by the given scale.
+    :rtype: NumPy array (np.ndarray).
+    """
     shape = np.array(frame.shape[::-1])
     center = shape / 2
     offset = scale * shape / 2
@@ -101,6 +110,13 @@ def crop_image(frame: np.ndarray, scale: float = 1.0) -> np.ndarray:
     return crop
 
 def process_square(square: np.ndarray) -> np.ndarray:
+    """
+    Process the input image to prepare for model prediction.
+    :param square: Image of a single square in the Sudoku puzzle.
+    :type square: NumPy array (np.ndarray).
+    :return: Processed square image of dimension 28 pixels by 28 pixels.
+    :rtype: NumPy array (np.ndarray).
+    """
     _, square = cv2.threshold(square, 100, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
     square = crop_image(square, 0.80)
     square = np.asarray(square)
@@ -110,9 +126,23 @@ def process_square(square: np.ndarray) -> np.ndarray:
     return square
 
 def extract_squares(board: np.ndarray) -> list:
+    """
+    Divides the square board into 9 by 9 squares and processes each square image.
+    :param board: Source image.
+    :type board: NumPy array (np.ndarray).
+    :return: List of the processed squares in the Sudoku puzzle.
+    :rtype: List of NumPy arrays (np.ndarray).
+    """
     return [process_square(square) for row in np.vsplit(board, 9) for square in np.hsplit(row, 9)]
 
 def predict_squares(squares: np.ndarray) -> list:
+    """
+    Predicts every square in the Sudoku puzzle.
+    :param squares: List of the processed square images of the Sudoku puzzle.
+    :type squares: NumPy array (np.ndarray).
+    :return: List of predicted squares.
+    :rtype: List of ints.
+    """
     return [np.argmax(prediction) + 1 if np.amax(prediction) > 0.8 else 0 for prediction in model.predict(squares)]
 
 def warp(image: np.ndarray, src: np.ndarray, dst: np.ndarray, dsize: tuple) -> np.ndarray:
@@ -126,11 +156,24 @@ def warp(image: np.ndarray, src: np.ndarray, dst: np.ndarray, dsize: tuple) -> n
     :type dst: NumPy array (np.ndarray).
     :param dsize: Size of output image.
     :type dsize: Tuple.
+    :return: Geometrically transformed image.
+    :rtype: NumPy array (np.ndarray).
     """
     matrix = cv2.getPerspectiveTransform(src, dst)
     return cv2.warpPerspective(image, matrix, dsize)
 
 def overlay_numbers(frame: np.ndarray, numbers: np.ndarray, color: tuple = (0,255,0)) -> np.ndarray:
+    """
+    Overlays the solved numbers over the correct part of the Sudoku puzzle.
+    :param frame: An empty image.
+    :type frame: NumPy array (np.ndarray).
+    :param numbers: The solved numbers from the Sudoku puzzle.
+    :type numbers: List of NumPy array (np.ndarray) of ints.
+    :param color: The color for the overlay numbers.
+    :type color: Tuple of dimension 3 (RGB).
+    :return: An image with the numbers overlayed in the correct position with respect to the Sudoku puzzle.
+    :rtype: NumPy array (np.ndarray).
+    """
     sec_h, sec_w = (np.array(frame.shape[:2]) / 9).astype(int)
     for x in range(9):
         for y in range(9):
@@ -139,7 +182,22 @@ def overlay_numbers(frame: np.ndarray, numbers: np.ndarray, color: tuple = (0,25
                 cv2.putText(frame, str(number), (x * sec_w + int(sec_w / 2) - 10, int((y + 0.8) * sec_h)), cv2.FONT_HERSHEY_COMPLEX_SMALL, 2, color, 2, cv2.LINE_AA)
     return frame
 
-def overlay(frame: np.ndarray, solved: list, corners: np.ndarray, height: int, width: int):
+def overlay(frame: np.ndarray, solved: list, corners: np.ndarray, height: int, width: int) -> np.ndarray:
+    """
+    Overlay the solution on the Sudoku puzzle.
+    :param frame: The frame captured by the camera.
+    :type frame: NumPy array (np.ndarray).
+    :param solved: The solution of the Sudoku board.
+    :type solved: List of ints.
+    :param corners: Corners of the Sudoku board.
+    :type corners: NumPy array (np.ndarray).
+    :param height: Height of the frame.
+    :type height: Int.
+    :param width: Width of the frame.
+    :type width: Int.
+    :return: Full frame with solution overlayed.
+    :rtype: NumPy array (np.ndarray).
+    """
     image = np.zeros((height, width, 3), np.uint8)
     image = overlay_numbers(image, solved)
 

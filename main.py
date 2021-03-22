@@ -49,6 +49,8 @@ if __name__ == '__main__':
                 frame = overlay(frame, solved, corners, height, width)
             
             previous_squares = predicted_squares
+        else:
+            print("Bring Sudoku puzzle closer to camera.")
 
         if cv2.waitKey(1) == ord('q'):
             break
