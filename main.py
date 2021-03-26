@@ -9,10 +9,10 @@ if __name__ == '__main__':
     # ensure that the model works
     calibrate_model()
 
+    window = "Sudoku Solver by @victor-hugo-dc"
     height = width = 450 # dimensions of the frames
     dimensions = np.float32([[0, 0],[width, 0], [0, height],[width, height]])
     cap = cv2.VideoCapture(0)
-    cap.set(cv2.CAP_PROP_FPS, 5) # lower fps for more fluid board detection
     previous_squares = "1" * 81 # the previous sequence of predicted squares
     sudoku = None
 
@@ -36,7 +36,7 @@ if __name__ == '__main__':
             pos_array = np.where(np.asarray(predicted_squares) > 0, 0, 1) # array that allows us to show solved numbers
             predicted_squares = ''.join(map(str, predicted_squares))
 
-            if previous_squares != predicted_squares: 
+            if previous_squares != predicted_squares:
                 # the predicted numbers differ from the previously predicted numbers,
                 # recalculate the Sudoku board.
                 solved = solve(predicted_squares)
@@ -49,13 +49,11 @@ if __name__ == '__main__':
                 frame = overlay(frame, solved, corners, height, width)
             
             previous_squares = predicted_squares
-        else:
-            print("Bring Sudoku puzzle closer to camera.")
 
         if cv2.waitKey(1) == ord('q'):
             break
 
-        cv2.imshow("Sudoku Solver by @victor-hugo-dc", frame)
+        cv2.imshow(window, frame)
         ret, frame = cap.read()
     
     cap.release()
