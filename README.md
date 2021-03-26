@@ -1,5 +1,5 @@
 # Sudoku AI
-Finding a solution, in real-time, to a Sudoku puzzle using **Computer Vision**, **Neural Networks**, and the **Backtracking Algorithm** with constraint propogation.
+Finding a solution, in real-time, to a Sudoku puzzle using **Computer Vision**, **Neural Networks**, and the **Backtracking Algorithm** with constraint propagation.
 
 ## Table of Contents
 1. [Introduction](#Introduction)
