@@ -51,7 +51,7 @@ python3 main.py
 4.2 Overlay the solution over the input frame.
 
 ## Resources
-[OpenCV Sudoku Solver and OCR by Adrian Rosebrock](https://www.pyimagesearch.com/2020/08/10/opencv-sudoku-solver-and-ocr/)
+[OpenCV Sudoku Solver and OCR by Adrian Rosebrock](https://www.pyimagesearch.com/2020/08/10/opencv-sudoku-solver-and-ocr/)\
 [OpenCV Sudoku Solver by 
 Murtaza's Workshop](https://www.youtube.com/watch?v=qOXDoYUgNlU)\
 [Solving Every Sudoku Puzzle by Peter Norvig](https://norvig.com/sudoku.html)
