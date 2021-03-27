@@ -109,7 +109,7 @@ def process_square(square: np.ndarray) -> np.ndarray:
     :rtype: NumPy array (np.ndarray).
     """
     _, square = cv2.threshold(square, 100, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-    square = crop_image(square, 0.80)
+    square = crop_image(square, 0.9)
     square = np.asarray(square)
     square = cv2.resize(square, (28, 28))
     square = square / 255
@@ -127,15 +127,17 @@ def extract_squares(board: np.ndarray) -> np.ndarray:
     squares = [process_square(square) for row in np.vsplit(board, 9) for square in np.hsplit(row, 9)]
     return np.vstack(squares)
 
-def predict_squares(squares: np.ndarray) -> np.ndarray:
+def predict_squares(squares: np.ndarray, min_confidence: float = 0.8) -> np.ndarray:
     """
     Predicts every square in the Sudoku puzzle.
     :param squares: List of the processed square images of the Sudoku puzzle.
     :type squares: NumPy array (np.ndarray).
+    :param min_confidence: Minimum confidence threshold.
+    :type min_confidence: Float.
     :return: List of predicted squares.
     :rtype: NumPy array (np.ndarray) of ints.
     """
-    predictions = [np.argmax(prediction) + 1 if np.amax(prediction) > 0.8 else 0 for prediction in model.predict(squares)]
+    predictions = [np.argmax(prediction) + 1 if np.amax(prediction) > min_confidence else 0 for prediction in model.predict(squares)]
     return np.asarray(predictions)
 
 def warp(image: np.ndarray, src: np.ndarray, dst: np.ndarray, dsize: tuple) -> np.ndarray:
