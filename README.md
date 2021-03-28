@@ -45,7 +45,7 @@ python3 main.py
     We convert the frame to grayscale and then apply a Gaussian blur with a kernel size of (9, 9).
 
     1.2 Adaptive Threshold: Segment the regions in the image to identify the puzzle.
-    ```
+    ```python
     result = cv2.adaptiveThreshold(result, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 1, 11, 2)
     ```
     <p align = "center">
